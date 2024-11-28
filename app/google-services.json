@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "637518202135",
+    "project_id": "tuberculosispredictionapp",
+    "storage_bucket": "tuberculosispredictionapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637518202135:android:d2b7ce28b8495bb6b72352",
+        "android_client_info": {
+          "package_name": "com.example.tuberculosispredictionapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDScm5JedBYiS5IhMmrs3003xXXIGmRO7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
