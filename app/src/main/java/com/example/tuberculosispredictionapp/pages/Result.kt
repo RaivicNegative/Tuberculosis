@@ -105,7 +105,7 @@ fun Result(
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF0288D1),
-                        contentColor = Color(0xFF1C1C1C)
+                        contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {

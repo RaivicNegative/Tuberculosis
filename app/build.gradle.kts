@@ -92,4 +92,8 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-database-ktx:20.2.2")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.1")
+
 }

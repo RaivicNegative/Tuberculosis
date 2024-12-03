@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -89,155 +90,163 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { navController.navigate("predict") }
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .height(130.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFA5D6A7)),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
+
+                    Text(
+                        text = "Predict Tuberculosis",
+                        color = Color(0xFF1C1C1C),
+                        fontSize = 28.sp,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     Image(
                         painter = painterResource(id = R.drawable.prediction),
                         contentDescription = "Predict Image",
                         modifier = Modifier
-                            .size(70.dp)
-                            .padding(bottom = 8.dp),
-                        colorFilter = ColorFilter.tint(Color(0xFF1C1C1C))
-                    )
-                    Text(
-                        text = "Predict Tuberculosis",
-                        color = Color(0xFF1C1C1C),
-                        fontSize = 24.sp,
-                        style = TextStyle(
-                            fontFamily = customRobotoFontFamily,
-                            fontWeight = FontWeight.Bold
-                        )
+                            .size(90.dp)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            // Recommendation Map Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        hasPredicted = true
                         navController.navigate("recommendation/${if (hasPredicted) "true" else "false"}")
                     }
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .height(130.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF59D)),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.recommend),
-                        contentDescription = "Recommendation Image",
-                        modifier = Modifier
-                            .size(70.dp)
-                            .padding(bottom = 8.dp),
-                        colorFilter = ColorFilter.tint(Color(0xFF1C1C1C))
-                    )
                     Text(
                         text = "Recommendation Map",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 24.sp,
+                        fontSize = 28.sp,
                         style = TextStyle(
-                            fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.mappp),
+                        contentDescription = "Recommendation Image",
+                        modifier = Modifier
+                            .size(90.dp)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            // What is Tuberculosis Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { navController.navigate("what") }
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .height(130.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF81D4FA)),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.question),
-                        contentDescription = "What Image",
-                        modifier = Modifier
-                            .size(70.dp)
-                            .padding(bottom = 8.dp),
-                        colorFilter = ColorFilter.tint(Color(0xFF1C1C1C))
-                    )
                     Text(
                         text = "What is Tuberculosis",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 24.sp,
+                        fontSize = 28.sp,
                         style = TextStyle(
-                            fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.questionn),
+                        contentDescription = "What Image",
+                        modifier = Modifier
+                            .size(90.dp)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            // Treatment Guide Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { navController.navigate("treatment") }
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .height(130.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF81C784)),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.guide),
-                        contentDescription = "Treatment Guide Image",
-                        modifier = Modifier
-                            .size(70.dp)
-                            .padding(bottom = 8.dp),
-                        colorFilter = ColorFilter.tint(Color(0xFF1C1C1C))
-                    )
                     Text(
                         text = "Treatment Guide",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 24.sp,
+                        fontSize = 28.sp,
                         style = TextStyle(
-                            fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.treatmentt),
+                        contentDescription = "Treatment Guide Image",
+                        modifier = Modifier
+                            .size(90.dp)
                     )
                 }
             }
         }
     }
 }
+
 

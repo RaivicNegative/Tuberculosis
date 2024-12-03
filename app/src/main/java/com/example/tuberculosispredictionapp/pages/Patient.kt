@@ -1,6 +1,6 @@
 package com.example.tuberculosispredictionapp.pages
 
-data class User(
+data class Patient(
     val email: String = "",
     val password: String = "",
     val fullname: String = "",

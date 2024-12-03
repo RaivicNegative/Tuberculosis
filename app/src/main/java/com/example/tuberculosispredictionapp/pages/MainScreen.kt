@@ -28,6 +28,7 @@ import com.example.tuberculosispredictionapp.Authstate
 import com.example.tuberculosispredictionapp.NavItem
 import com.example.tuberculosispredictionapp.ProfileViewModel
 import com.example.tuberculosispredictionapp.R
+import java.nio.file.WatchEvent
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel, profileViewModel: ProfileViewModel) {
@@ -44,6 +45,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController, auth
     val navItemList = listOf(
         NavItem("Home", R.drawable.home),
         NavItem("Profile", R.drawable.person),
+        NavItem("History", R.drawable.history),
         NavItem("Privacy Policy", R.drawable.policy)
     )
 
@@ -84,7 +86,8 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController, auth
         when (selectedIndex) {
             0 -> HomePage(modifier = Modifier.padding(innerPadding), navController, authViewModel)
             1 -> ProfilePage(modifier = Modifier.padding(innerPadding), profileViewModel, authViewModel)
-            2 -> PrivacyPolicyPage(modifier = Modifier.padding(innerPadding))
+            2 -> History(modifier = Modifier.padding(innerPadding))
+            3 -> PrivacyPolicyPage(modifier = Modifier.padding(innerPadding))
         }
     }
 }
