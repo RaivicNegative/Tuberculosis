@@ -107,7 +107,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                     Text(
                         text = "Predict Tuberculosis",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 28.sp,
+                        fontSize = 22.sp,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold
                         )
@@ -126,7 +126,6 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Recommendation Map Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +148,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                     Text(
                         text = "Recommendation Map",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 28.sp,
+                        fontSize = 22.sp,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold
                         )
@@ -168,7 +167,6 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // What is Tuberculosis Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,7 +187,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                     Text(
                         text = "What is Tuberculosis",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 28.sp,
+                        fontSize = 22.sp,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold
                         )
@@ -208,7 +206,6 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Treatment Guide Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -229,13 +226,13 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                     Text(
                         text = "Treatment Guide",
                         color = Color(0xFF1C1C1C),
-                        fontSize = 28.sp,
+                        fontSize = 22.sp,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold
                         )
                     )
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(44.dp))
 
                     Image(
                         painter = painterResource(id = R.drawable.treatmentt),

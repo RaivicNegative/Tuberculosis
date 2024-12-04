@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tuberculosispredictionapp.pages.SymptomEntry
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,47 +41,40 @@ class PredictionViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance()
     private val predictionsRef = database.getReference("predictions")
 
-    // In your ViewModel
     private val _symptomsHistory = MutableStateFlow<List<SymptomEntry>>(emptyList())
     val symptomsHistory: StateFlow<List<SymptomEntry>> = _symptomsHistory
-
 
     init {
         fetchPredictions()
     }
 
     private fun fetchPredictions() {
-        predictionsRef.addValueEventListener(object : ValueEventListener {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PredictionViewModel", "User not authenticated.")
+            return
+        }
+
+        predictionsRef.child(userId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("PredictionViewModel", "Symptoms data: ${snapshot.child("symptoms").value}")
+                Log.d("PredictionViewModel", "Fetched Snapshot: ${snapshot.value}")
 
                 val fetchedPredictions = mutableListOf<Prediction>()
-                for (child in snapshot.children) {
-                    val id = child.key.orEmpty()
 
-                    val symptomsSnapshot = child.child("symptoms")
-                    val symptoms = mutableListOf<Int>()
-                    for (symptom in symptomsSnapshot.children) {
-                        val symptomValue = symptom.getValue(Long::class.java) ?: 0L
-                        symptoms.add(symptomValue.toInt())
-                    }
+                if (snapshot.exists()) {
 
-                    val prediction: String = child.child("prediction").let {
-                        when (val value = it.getValue()) {
-                            is String -> value
-                            is Long -> value.toString()
-                            else -> "Unknown"
-                        }
-                    }
+                    val prediction = snapshot.child("prediction").getValue(String::class.java).orEmpty()
+                    val confidence = snapshot.child("confidence").getValue(Double::class.java) ?: 0.0
+                    val riskCategory = snapshot.child("riskCategory").getValue(String::class.java).orEmpty()
 
                     fetchedPredictions.add(
                         Prediction(
-                            id = id,
-                            symptoms = symptoms,
+                            id = userId,
                             prediction = prediction
                         )
                     )
                 }
+
                 _predictions.value = fetchedPredictions
                 Log.d("PredictionViewModel", "Fetched Predictions: $fetchedPredictions")
             }
@@ -91,26 +85,25 @@ class PredictionViewModel : ViewModel() {
         })
     }
 
-    fun fetchSymptomsFromDatabase(userId: String) {
-        val databaseReference: DatabaseReference =
-            FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
 
+    fun fetchSymptomsFromDatabase(userId1: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PredictionViewModel", "User not authenticated.")
+            return
+        }
+
+        val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val symptomsList = mutableListOf<SymptomEntry>()
-
                 for (childSnapshot in snapshot.children) {
                     val symptom = childSnapshot.child("symptom").getValue(String::class.java)
                     val timestamp = childSnapshot.child("timestamp").getValue(String::class.java)
-
-                    // Only add to list if both symptom and timestamp exist
                     if (symptom != null && timestamp != null) {
-                        val symptomEntry = SymptomEntry(symptom, timestamp)
-                        symptomsList.add(symptomEntry)
+                        symptomsList.add(SymptomEntry(symptom, timestamp))
                     }
                 }
-
-                // Update the symptoms history StateFlow
                 _symptomsHistory.value = symptomsList
             }
 
@@ -120,8 +113,8 @@ class PredictionViewModel : ViewModel() {
         })
     }
 
-    fun getPredictionResult(selectedSymptoms: List<String>): PredictionResult {
 
+    fun getPredictionResult(selectedSymptoms: List<String>): PredictionResult {
         val confidence = (0..100).random().toFloat() / 100
         val disease = if (selectedSymptoms.contains("Cough(>3weeks)") || selectedSymptoms.contains("Blood In Sputum")) {
             "Tuberculosis"
@@ -149,7 +142,13 @@ class PredictionViewModel : ViewModel() {
         _hasPredicted.value = hasPredicted
     }
 
-    fun savePrediction(userId: String, symptoms: List<Int>, predictionResult: PredictionResult) {
+    fun savePrediction(symptoms1: String, symptoms: List<Int>, predictionResult: PredictionResult) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PredictionViewModel", "User not authenticated.")
+            return
+        }
+
         val predictionData = mapOf(
             "symptoms" to symptoms,
             "prediction" to predictionResult.disease,
@@ -166,6 +165,7 @@ class PredictionViewModel : ViewModel() {
             }
     }
 
+
     fun saveSymptomsToDatabase(userId: String, selectedSymptoms: List<String>) {
         val symptomsRef = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
 
@@ -177,11 +177,10 @@ class PredictionViewModel : ViewModel() {
         selectedSymptoms.forEach { symptom ->
             val entry = SymptomEntry(
                 symptom = symptom,
-                timestamp = dateFormat.format(currentTimestamp)  // Format the timestamp
+                timestamp = dateFormat.format(currentTimestamp)
             )
 
-            // Saving to Firebase
-            val newSymptomRef = symptomsRef.push()  // Generates a unique ID for each symptom
+            val newSymptomRef = symptomsRef.push()
             newSymptomRef.setValue(entry).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firebase", "Symptom saved: $entry")
@@ -192,34 +191,25 @@ class PredictionViewModel : ViewModel() {
         }
     }
 
-    fun listenForPredictionUpdates(userId: String) {
-        val predictionRef = predictionsRef.child(userId)
+    fun listenForPredictionUpdates(toString: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PredictionViewModel", "User not authenticated.")
+            return
+        }
 
+        val predictionRef = predictionsRef.child(userId)
         predictionRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("PredictionViewModel", "Symptoms data: ${snapshot.child("symptoms").value}")
-
-                val symptomsSnapshot = snapshot.child("symptoms")
-                val symptoms = mutableListOf<Int>()
-                for (symptom in symptomsSnapshot.children) {
-                    val symptomValue = symptom.getValue(Long::class.java) ?: 0L
-                    symptoms.add(symptomValue.toInt())
+                val symptoms = snapshot.child("symptoms").children.mapNotNull {
+                    it.getValue(Long::class.java)?.toInt()
                 }
-
-                val prediction: String = snapshot.child("prediction").let {
-                    when (val value = it.getValue()) {
-                        is String -> value
-                        is Long -> value.toString()
-                        else -> "Unknown"
-                    }
-                }
-
+                val prediction: String = snapshot.child("prediction").getValue(String::class.java) ?: "Unknown"
                 val confidence = snapshot.child("confidence").getValue(Float::class.java) ?: 0f
                 val riskCategory = snapshot.child("riskCategory").getValue(String::class.java).orEmpty()
 
-                val result = PredictionResult(prediction, confidence, riskCategory)
-                _predictionResult.value = result
-                Log.d("PredictionViewModel", "Updated Prediction for $userId: $result")
+                _predictionResult.value = PredictionResult(prediction, confidence, riskCategory)
+                Log.d("PredictionViewModel", "Updated Prediction for $userId: $_predictionResult")
             }
 
             override fun onCancelled(error: DatabaseError) {

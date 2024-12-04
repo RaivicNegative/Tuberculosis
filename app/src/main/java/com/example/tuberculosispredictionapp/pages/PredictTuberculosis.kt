@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,6 +35,7 @@ import kotlin.math.roundToInt
 
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewModel = viewModel()) {
@@ -41,10 +43,11 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
     val context = LocalContext.current
     val predictionResult by viewModel.predictionResult.observeAsState(PredictionResult())
 
-    val userId = "12345"
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
 
     LaunchedEffect(userId) {
-        viewModel.listenForPredictionUpdates(userId)
+        viewModel.listenForPredictionUpdates(userId.toString())
     }
 
     Box(
@@ -105,7 +108,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                             Spacer(modifier = Modifier.height(10.dp))
 
                             Text(
-                                text = "*Please click the box if you experience these symptoms below:",
+                                text = "Please click the box if you experience the symptoms below:",
                                 fontSize = 13.sp,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
@@ -246,19 +249,27 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                     viewModel.setPredictionResult(PredictionResult("No Symptoms", 0f, "No Risk"))
                                     viewModel.setHasPredicted(true)
                                 } else {
+                                    // Save symptoms to the database
+                                    viewModel.saveSymptomsToDatabase(userId.toString(), selectedSymptoms)
 
-                                    viewModel.saveSymptomsToDatabase(userId, selectedSymptoms)
-
+                                    // Get the prediction result based on selected symptoms
                                     val predictionResult = viewModel.getPredictionResult(selectedSymptoms)
+
+                                    // Set the prediction result in the ViewModel
                                     viewModel.setPredictionResult(predictionResult)
                                     viewModel.setHasPredicted(true)
 
+                                    // Save the prediction to the database under the userId
+                                    viewModel.savePrediction(userId.toString(), selectedSymptoms.map { it.hashCode() }, predictionResult)
+
+                                    // Log the prediction details
                                     val roundedConfidence = (predictionResult.confidence * 100).roundToInt()
                                     Log.d(
                                         "Prediction",
                                         "Disease: ${predictionResult.disease}, Confidence: $roundedConfidence%, Risk: ${predictionResult.riskCategory}"
                                     )
 
+                                    // Navigate to the result screen
                                     navController.navigate(
                                         "result/${predictionResult.disease}/${
                                             (predictionResult.confidence * 100).roundToInt()
@@ -277,6 +288,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                 style = TextStyle(fontWeight = FontWeight.Medium)
                             )
                         }
+
                     }
                 }
             }

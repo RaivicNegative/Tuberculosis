@@ -22,12 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.tuberculosispredictionapp.AuthViewModel
 import com.example.tuberculosispredictionapp.Authstate
 import com.example.tuberculosispredictionapp.NavItem
 import com.example.tuberculosispredictionapp.ProfileViewModel
 import com.example.tuberculosispredictionapp.R
+import com.google.api.ResourceDescriptor.History
 import java.nio.file.WatchEvent
 
 @Composable
@@ -46,7 +48,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController, auth
         NavItem("Home", R.drawable.home),
         NavItem("Profile", R.drawable.person),
         NavItem("History", R.drawable.history),
-        NavItem("Privacy Policy", R.drawable.policy)
+        NavItem("PrivacyPolicy", R.drawable.policy)
     )
 
     var selectedIndex by remember { mutableStateOf(0) }
@@ -69,7 +71,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController, auth
                                 contentDescription = null)
                                },
                         label = {
-                            Text(text = navItem.label)
+                            Text(text = navItem.label, fontSize = 11.sp)
                         },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color(0xFF81C784),
@@ -86,7 +88,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController, auth
         when (selectedIndex) {
             0 -> HomePage(modifier = Modifier.padding(innerPadding), navController, authViewModel)
             1 -> ProfilePage(modifier = Modifier.padding(innerPadding), profileViewModel, authViewModel)
-            2 -> History(modifier = Modifier.padding(innerPadding))
+            2 -> HistoryScreen(modifier = Modifier.padding(innerPadding))
             3 -> PrivacyPolicyPage(modifier = Modifier.padding(innerPadding))
         }
     }
