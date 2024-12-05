@@ -170,7 +170,6 @@ fun HistoryScreen(
                             },
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .padding(16.dp)
                         ) {
                             Text("Clear History", color = Color(0xFF1565C0))
                         }
