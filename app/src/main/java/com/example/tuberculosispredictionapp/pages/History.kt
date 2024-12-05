@@ -49,8 +49,8 @@ fun HistoryScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
-                        .weight(1f),
+                        .padding(16.dp)
+                        .height(550.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF59D)),
                     elevation = CardDefaults.cardElevation(8.dp)
