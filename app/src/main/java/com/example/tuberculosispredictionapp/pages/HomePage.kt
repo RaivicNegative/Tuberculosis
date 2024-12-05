@@ -21,13 +21,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.tuberculosispredictionapp.AuthViewModel
+import com.example.tuberculosispredictionapp.PredictionViewModel
 import com.example.tuberculosispredictionapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun HomePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel, viewModel: PredictionViewModel = viewModel()) {
 
     var hasPredicted by remember { mutableStateOf(false) }
 
@@ -130,7 +132,8 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate("recommendation/${if (hasPredicted) "true" else "false"}")
+                        viewModel.setHasPredicted(true)
+                        navController.navigate("recommendation/true")
                     }
                     .padding(4.dp)
                     .height(130.dp),
@@ -185,7 +188,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "What is Tuberculosis",
+                        text = "What is Tuberculosis?",
                         color = Color(0xFF1C1C1C),
                         fontSize = 22.sp,
                         style = TextStyle(

@@ -32,7 +32,9 @@ fun HistoryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Prediction History") },
+                title = { Text("Prediction History", fontSize = 36.sp,
+                    style = TextStyle(fontFamily = customRobotoFontFamily,
+                        fontWeight = FontWeight.Bold)) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF81C784)),
                 actions = {}
             )

@@ -45,7 +45,9 @@ fun PrivacyPolicyPage(modifier: Modifier) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Privacy Policy") },
+                title = { Text("Privacy Policy", fontSize = 36.sp,
+                    style = TextStyle(fontFamily = customRobotoFontFamily,
+                        fontWeight = FontWeight.Bold)) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF81C784)),
             )
         },

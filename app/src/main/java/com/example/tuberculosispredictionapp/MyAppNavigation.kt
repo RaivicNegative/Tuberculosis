@@ -27,7 +27,7 @@ fun MyAppNavigation(
         }
 
         composable("register") {
-            RegisterPage(modifier, navController, authViewModel)
+            RegisterPage(modifier, navController, authViewModel, profileViewModel)
         }
 
         composable("main") {

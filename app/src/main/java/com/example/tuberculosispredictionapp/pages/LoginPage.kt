@@ -54,8 +54,12 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
 
     LaunchedEffect(authstate.value) {
         when (authstate.value) {
-            is Authstate.Authenticated -> navController.navigate("main")
-            is Authstate.Error -> Toast.makeText(context, (authstate.value as Authstate.Error).message, Toast.LENGTH_SHORT).show()
+            is Authstate.Authenticated -> {
+                navController.navigate("main")
+            }
+            is Authstate.Error -> {
+                Toast.makeText(context, (authstate.value as Authstate.Error).message, Toast.LENGTH_SHORT).show()
+            }
             else -> Unit
         }
     }
