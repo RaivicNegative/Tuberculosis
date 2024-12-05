@@ -1,8 +1,6 @@
 package com.example.tuberculosispredictionapp
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,11 +13,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-data class Prediction(
-    val id: String = "",
-    val symptoms: List<Int> = emptyList(),
-    val prediction: String = ""
+data class CombinedEntry(
+    val timestamp: String,
+    val symptoms: List<SymptomEntry>,
+    val prediction: String,
+    val confidence: Float,
+    val riskCategory: String
 )
+
 
 data class PredictionResult(
     val disease: String = "Tuberculosis",
@@ -29,8 +30,8 @@ data class PredictionResult(
 
 class PredictionViewModel : ViewModel() {
 
-    private val _predictions = mutableStateOf<List<Prediction>>(emptyList())
-    val predictions: State<List<Prediction>> = _predictions
+    private val _combinedHistory = MutableStateFlow<List<CombinedEntry>>(emptyList())
+    val combinedHistory: StateFlow<List<CombinedEntry>> = _combinedHistory
 
     private val _predictionResult = MutableLiveData<PredictionResult>()
     val predictionResult: LiveData<PredictionResult> = _predictionResult
@@ -45,70 +46,67 @@ class PredictionViewModel : ViewModel() {
     val symptomsHistory: StateFlow<List<SymptomEntry>> = _symptomsHistory
 
     init {
-        fetchPredictions()
+        fetchCombinedData()
     }
 
-    private fun fetchPredictions() {
+    fun fetchCombinedData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId == null) {
             Log.e("PredictionViewModel", "User not authenticated.")
             return
         }
 
-        predictionsRef.child(userId).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("PredictionViewModel", "Fetched Snapshot: ${snapshot.value}")
+        val symptomsRef = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
+        val predictionsRef = FirebaseDatabase.getInstance().getReference("predictions/$userId")
 
-                val fetchedPredictions = mutableListOf<Prediction>()
+        symptomsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(symptomsSnapshot: DataSnapshot) {
+                val symptomsMap = mutableMapOf<String, MutableList<SymptomEntry>>()
 
-                if (snapshot.exists()) {
-
-                    val prediction = snapshot.child("prediction").getValue(String::class.java).orEmpty()
-                    val confidence = snapshot.child("confidence").getValue(Double::class.java) ?: 0.0
-                    val riskCategory = snapshot.child("riskCategory").getValue(String::class.java).orEmpty()
-
-                    fetchedPredictions.add(
-                        Prediction(
-                            id = userId,
-                            prediction = prediction
-                        )
-                    )
-                }
-
-                _predictions.value = fetchedPredictions
-                Log.d("PredictionViewModel", "Fetched Predictions: $fetchedPredictions")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("PredictionViewModel", "Error fetching predictions: ${error.message}")
-            }
-        })
-    }
-
-
-    fun fetchSymptomsFromDatabase(userId1: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId == null) {
-            Log.e("PredictionViewModel", "User not authenticated.")
-            return
-        }
-
-        val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val symptomsList = mutableListOf<SymptomEntry>()
-                for (childSnapshot in snapshot.children) {
+                for (childSnapshot in symptomsSnapshot.children) {
                     val symptom = childSnapshot.child("symptom").getValue(String::class.java)
                     val timestamp = childSnapshot.child("timestamp").getValue(String::class.java)
                     if (symptom != null && timestamp != null) {
-                        symptomsList.add(SymptomEntry(symptom, timestamp))
+                        symptomsMap.getOrPut(timestamp) { mutableListOf() }
+                            .add(SymptomEntry(symptom, timestamp))
                     }
                 }
-                _symptomsHistory.value = symptomsList
+
+                predictionsRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(predictionsSnapshot: DataSnapshot) {
+                        val combinedList = mutableListOf<CombinedEntry>()
+
+                        for (childSnapshot in predictionsSnapshot.children) {
+                            val timestamp = childSnapshot.child("timestamp").getValue(String::class.java)
+                            val prediction = childSnapshot.child("prediction").getValue(String::class.java).orEmpty()
+                            val confidence = childSnapshot.child("confidence").getValue(Double::class.java)?.toFloat() ?: 0f
+                            val riskCategory = childSnapshot.child("riskCategory").getValue(String::class.java).orEmpty()
+
+                            if (timestamp != null) {
+                                val symptoms = symptomsMap[timestamp].orEmpty()
+                                combinedList.add(
+                                    CombinedEntry(
+                                        timestamp = timestamp,
+                                        symptoms = symptoms,
+                                        prediction = prediction,
+                                        confidence = confidence,
+                                        riskCategory = riskCategory
+                                    )
+                                )
+                            }
+                        }
+
+                        _combinedHistory.value = combinedList
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("PredictionViewModel", "Error fetching predictions: ${error.message}")
+                    }
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Error fetching symptoms: ${error.message}")
+                Log.e("PredictionViewModel", "Error fetching symptoms: ${error.message}")
             }
         })
     }
@@ -149,16 +147,23 @@ class PredictionViewModel : ViewModel() {
             return
         }
 
+        val currentTimestamp = System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).apply {
+            timeZone = TimeZone.getTimeZone("Asia/Manila")
+        }
+        val formattedTimestamp = dateFormat.format(currentTimestamp)
+
         val predictionData = mapOf(
             "symptoms" to symptoms,
             "prediction" to predictionResult.disease,
             "confidence" to predictionResult.confidence,
-            "riskCategory" to predictionResult.riskCategory
+            "riskCategory" to predictionResult.riskCategory,
+            "timestamp" to formattedTimestamp
         )
 
-        predictionsRef.child(userId).setValue(predictionData)
+        predictionsRef.child(userId).push().setValue(predictionData)
             .addOnSuccessListener {
-                Log.d("PredictionViewModel", "Prediction saved successfully.")
+                Log.d("PredictionViewModel", "Prediction saved successfully with timestamp: $formattedTimestamp")
             }
             .addOnFailureListener { error ->
                 Log.e("PredictionViewModel", "Error saving prediction: ${error.message}")
@@ -171,7 +176,7 @@ class PredictionViewModel : ViewModel() {
 
         val currentTimestamp = System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
+            timeZone = TimeZone.getTimeZone("Asia/Manila")
         }
 
         selectedSymptoms.forEach { symptom ->
@@ -190,6 +195,7 @@ class PredictionViewModel : ViewModel() {
             }
         }
     }
+
 
     fun listenForPredictionUpdates(toString: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -216,5 +222,41 @@ class PredictionViewModel : ViewModel() {
                 Log.e("PredictionViewModel", "Error listening to prediction updates for $userId: ${error.message}")
             }
         })
+    }
+
+    fun clearHistory(onSuccess: () -> Unit = {}, onFailure: (Exception) -> Unit = {}) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PredictionViewModel", "User not authenticated.")
+            onFailure(Exception("User not authenticated"))
+            return
+        }
+
+        val userRef = FirebaseDatabase.getInstance().getReference("users/$userId")
+
+        // Remove both symptoms and predictions
+        userRef.child("symptoms").removeValue()
+            .addOnSuccessListener {
+                Log.d("PredictionViewModel", "Symptoms history cleared successfully.")
+
+                // Clear predictions as well
+                predictionsRef.child(userId).removeValue()
+                    .addOnSuccessListener {
+                        Log.d("PredictionViewModel", "Predictions history cleared successfully.")
+
+                        // Clear local state
+                        _symptomsHistory.value = emptyList()
+                        _combinedHistory.value = emptyList()
+                        onSuccess()
+                    }
+                    .addOnFailureListener { error ->
+                        Log.e("PredictionViewModel", "Failed to clear predictions: ${error.message}")
+                        onFailure(error)
+                    }
+            }
+            .addOnFailureListener { error ->
+                Log.e("PredictionViewModel", "Failed to clear symptoms: ${error.message}")
+                onFailure(error)
+            }
     }
 }

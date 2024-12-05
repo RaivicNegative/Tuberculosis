@@ -249,27 +249,27 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                     viewModel.setPredictionResult(PredictionResult("No Symptoms", 0f, "No Risk"))
                                     viewModel.setHasPredicted(true)
                                 } else {
-                                    // Save symptoms to the database
+
                                     viewModel.saveSymptomsToDatabase(userId.toString(), selectedSymptoms)
 
-                                    // Get the prediction result based on selected symptoms
+
                                     val predictionResult = viewModel.getPredictionResult(selectedSymptoms)
 
-                                    // Set the prediction result in the ViewModel
+
                                     viewModel.setPredictionResult(predictionResult)
                                     viewModel.setHasPredicted(true)
 
-                                    // Save the prediction to the database under the userId
+
                                     viewModel.savePrediction(userId.toString(), selectedSymptoms.map { it.hashCode() }, predictionResult)
 
-                                    // Log the prediction details
+
                                     val roundedConfidence = (predictionResult.confidence * 100).roundToInt()
                                     Log.d(
                                         "Prediction",
                                         "Disease: ${predictionResult.disease}, Confidence: $roundedConfidence%, Risk: ${predictionResult.riskCategory}"
                                     )
 
-                                    // Navigate to the result screen
+
                                     navController.navigate(
                                         "result/${predictionResult.disease}/${
                                             (predictionResult.confidence * 100).roundToInt()

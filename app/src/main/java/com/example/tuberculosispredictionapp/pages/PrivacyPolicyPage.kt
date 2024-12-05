@@ -7,8 +7,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PrivacyPolicyPage(modifier: Modifier) {
 
@@ -37,99 +42,111 @@ fun PrivacyPolicyPage(modifier: Modifier) {
 
     val scrollState = rememberScrollState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE6F2F1))
-    ) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Privacy Policy") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF81C784)),
+            )
+        },
+        content = { paddingValues ->
 
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFC3EFC5)),
-            elevation = CardDefaults.cardElevation(8.dp)
-        ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(16.dp)
-                    .padding(bottom = 80.dp)
+                    .background(Color(0xFFE6F2F1))
+                    .padding(paddingValues)
             ) {
-                Text(
-                    text = "Privacy Policy for Tuberculosis Prediction Application",
-                    fontSize = 22.sp,
-                    style = TextStyle(
-                        fontFamily = customRobotoFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0D47A1)
-                    )
-                )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Effective Date: October 22, 2024",
-                    fontSize = 18.sp,
-                    style = TextStyle(
-                        fontFamily = customRobotoFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF1976D2)
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Hey there! Welcome to Tuberculosis Prediction Application. We’re dedicated to keeping your personal information safe and secure. This Privacy Policy explains how we collect, use, and protect your data when you use our app designed to help predict the likelihood of tuberculosis.",
-                    fontSize = 18.sp,
-                    style = TextStyle(
-                        fontFamily = customRobotoFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Italic,
-                        color = Color(0xFF424242)
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                for (i in 1..7) {
-                    TextButton(onClick = { toggleVisibility(i) }) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFC3EFC5)),
+                    elevation = CardDefaults.cardElevation(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                            .padding(16.dp)
+                            .padding(bottom = 80.dp)
+                    ) {
                         Text(
-                            text = getSectionTitle(i),
-                            color = Color(0xFF1976D2),
-                            fontSize = 16.sp,
+                            text = "Privacy Policy for Tuberculosis Prediction Application",
+                            fontSize = 22.sp,
                             style = TextStyle(
                                 fontFamily = customRobotoFontFamily,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0D47A1)
                             )
                         )
-                    }
 
-                    if (visibilityStates.value[i] == true) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .background(Color(0xFFF1F8E9))
-                                .clip(RoundedCornerShape(12.dp))
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = getSectionContent(i),
-                                style = TextStyle(fontFamily = customRobotoFontFamily),
-                                modifier = Modifier.padding(top = 2.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Effective Date: October 22, 2024",
+                            fontSize = 18.sp,
+                            style = TextStyle(
+                                fontFamily = customRobotoFontFamily,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF1976D2)
                             )
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Hey there! Welcome to Tuberculosis Prediction Application. We’re dedicated to keeping your personal information safe and secure. This Privacy Policy explains how we collect, use, and protect your data when you use our app designed to help predict the likelihood of tuberculosis.",
+                            fontSize = 18.sp,
+                            style = TextStyle(
+                                fontFamily = customRobotoFontFamily,
+                                fontWeight = FontWeight.Normal,
+                                fontStyle = FontStyle.Italic,
+                                color = Color(0xFF424242)
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        for (i in 1..7) {
+                            TextButton(onClick = { toggleVisibility(i) }) {
+                                Text(
+                                    text = getSectionTitle(i),
+                                    color = Color(0xFF1976D2),
+                                    fontSize = 16.sp,
+                                    style = TextStyle(
+                                        fontFamily = customRobotoFontFamily,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+
+                            if (visibilityStates.value[i] == true) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                        .background(Color(0xFFF1F8E9))
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .padding(16.dp)
+                                ) {
+                                    Text(
+                                        text = getSectionContent(i),
+                                        style = TextStyle(fontFamily = customRobotoFontFamily),
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
-    }
+    )
 }
 
 fun getSectionTitle(section: Int): String {
