@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tuberculosispredictionapp.PredictionViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +28,13 @@ fun HistoryScreen(
     val combinedHistory by viewModel.combinedHistory.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+
+    val outputDateFormat = remember {
+        java.text.SimpleDateFormat("EEEE, MM d, yyyy h:mm a", Locale.getDefault()).apply {
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -82,7 +90,7 @@ fun HistoryScreen(
                                         .weight(1f)
                                         .fillMaxWidth()
                                 ) {
-                                    items(combinedHistory) { entry ->
+                                    items(combinedHistory.asReversed()) { entry ->
                                         Card(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -93,8 +101,28 @@ fun HistoryScreen(
                                             )
                                         ) {
                                             Column(modifier = Modifier.padding(16.dp)) {
+
+                                                val philippineTime = remember(entry.timestamp) {
+                                                    try {
+
+                                                        val parsedDate = java.text.SimpleDateFormat(
+                                                            "EEEE, MMMM d, yyyy h:mm a",
+                                                            Locale.getDefault()
+                                                        ).apply {
+                                                            timeZone = java.util.TimeZone.getTimeZone("Asia/Manila")
+                                                        }.parse(entry.timestamp)
+
+
+                                                        parsedDate?.let {
+                                                            outputDateFormat.format(it)
+                                                        } ?: entry.timestamp
+                                                    } catch (e: Exception) {
+                                                        entry.timestamp
+                                                    }
+                                                }
+
                                                 Text(
-                                                    text = "Timestamp: ${entry.timestamp}",
+                                                    text = "Timestamp: $philippineTime",
                                                     fontSize = 14.sp,
                                                     style = TextStyle(
                                                         fontFamily = customRobotoFontFamily,
@@ -179,6 +207,7 @@ fun HistoryScreen(
         }
     )
 }
+
 
 
 
