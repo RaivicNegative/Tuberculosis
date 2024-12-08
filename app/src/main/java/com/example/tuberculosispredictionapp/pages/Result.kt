@@ -95,8 +95,8 @@ fun Result(
                         ) {
                             Text(
                                 text = "The percentage you have a chance of Tuberculosis is:",
-                                fontSize = 20.sp,
-                                style = TextStyle(fontWeight = FontWeight.Medium),
+                                fontSize = 18.sp,
+                                style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium),
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }
@@ -134,35 +134,33 @@ fun Result(
                             Text(
                                 text = "$riskCategory of Tuberculosis",
                                 fontSize = 22.sp,
-                                style = TextStyle(fontWeight = FontWeight.Bold)
+                                style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Bold)
                             )
                         }
                     }
                 }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Button(
-                                onClick = {
-                                    viewModel.setHasPredicted(true)
-                                    navController.navigate("recommendation/true")
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF0288D1),
-                                    contentColor = Color.White
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = "Recommendation",
-                                    style = TextStyle(fontWeight = FontWeight.Medium)
-                                )
-
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = {
+                            viewModel.setHasPredicted(true)
+                            navController.navigate("recommendation/true")
+                                  },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF0288D1),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Recommendation",
+                            style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
+                        )
                     }
                 }
             }

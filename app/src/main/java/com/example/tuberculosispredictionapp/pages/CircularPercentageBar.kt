@@ -20,7 +20,7 @@ fun CircularPercentageBar(
     size: Dp,
     strokeWidth: Dp,
     text: String,
-    textSize: Int,
+    textSize: Int
 ) {
     Box(
         contentAlignment = androidx.compose.ui.Alignment.Center,

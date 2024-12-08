@@ -51,7 +51,7 @@ fun RegisterPage(
             Text(
                 text = "Registration Form",
                 fontSize = 32.sp,
-                style = TextStyle(fontWeight = FontWeight.Bold)
+                style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Bold)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -59,7 +59,7 @@ fun RegisterPage(
             OutlinedTextField(
                 value = fullname,
                 onValueChange = { fullname = it },
-                label = { Text(text = "Fullname") },
+                label = { Text(text = "Fullname", style = TextStyle(fontFamily = customRobotoFontFamily)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -68,7 +68,7 @@ fun RegisterPage(
             OutlinedTextField(
                 value = address,
                 onValueChange = { address = it },
-                label = { Text(text = "Address") },
+                label = { Text(text = "Address", style = TextStyle(fontFamily = customRobotoFontFamily)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -77,7 +77,7 @@ fun RegisterPage(
             OutlinedTextField(
                 value = phonenumber,
                 onValueChange = { phonenumber = it },
-                label = { Text(text = "Phone Number") },
+                label = { Text(text = "Phone Number", style = TextStyle(fontFamily = customRobotoFontFamily)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -86,7 +86,7 @@ fun RegisterPage(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text(text = "Email") },
+                label = { Text(text = "Email", style = TextStyle(fontFamily = customRobotoFontFamily)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -95,7 +95,7 @@ fun RegisterPage(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text(text = "Password") },
+                label = { Text(text = "Password", style = TextStyle(fontFamily = customRobotoFontFamily)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -139,21 +139,24 @@ fun RegisterPage(
                     Text(
                         text = "Register Now",
                         color = Color.White,
-                        style = TextStyle(fontWeight = FontWeight.Medium)
+                        style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(horizontalArrangement = Arrangement.Center) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = "Already have an Account?",
+                    text = "Already have an Account?", style = TextStyle(fontFamily = customRobotoFontFamily)
                 )
                 Text(
                     text = "Login",
                     modifier = Modifier.clickable { navController.navigate("Login") },
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                    style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Bold)
                 )
             }
         }

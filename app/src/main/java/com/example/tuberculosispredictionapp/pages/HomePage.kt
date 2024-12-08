@@ -110,7 +110,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                         text = "Predict Tuberculosis",
                         color = Color(0xFF1C1C1C),
                         fontSize = 22.sp,
-                        style = TextStyle(
+                        style = TextStyle(fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -152,7 +152,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                         text = "Recommendation Map",
                         color = Color(0xFF1C1C1C),
                         fontSize = 22.sp,
-                        style = TextStyle(
+                        style = TextStyle(fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -191,7 +191,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                         text = "What is Tuberculosis?",
                         color = Color(0xFF1C1C1C),
                         fontSize = 22.sp,
-                        style = TextStyle(
+                        style = TextStyle(fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -230,7 +230,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
                         text = "Treatment Guide",
                         color = Color(0xFF1C1C1C),
                         fontSize = 22.sp,
-                        style = TextStyle(
+                        style = TextStyle(fontFamily = customRobotoFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                     )

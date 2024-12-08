@@ -207,7 +207,7 @@ fun HistoryScreen(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                         ) {
-                            Text("Clear History", color = Color(0xFF1565C0))
+                            Text("Clear History", style = TextStyle(fontFamily = customRobotoFontFamily), color = Color(0xFF1565C0))
                         }
                     }
                 }

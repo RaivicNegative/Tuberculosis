@@ -1,14 +1,10 @@
 package com.example.tuberculosispredictionapp.pages
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,13 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tuberculosispredictionapp.AuthViewModel
@@ -146,7 +138,10 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                         onValueChange = { fullname = it },
                                         enabled = true,
                                         modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("Fullname", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                                        label = { Text("Fullname", fontSize = 16.sp,
+                                            style = TextStyle(
+                                                fontFamily = customRobotoFontFamily,
+                                                fontWeight = FontWeight.Bold)) }
                                     )
 
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -154,9 +149,12 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                     OutlinedTextField(
                                         value = email,
                                         onValueChange = { email = it },
-                                        enabled = true,
+                                        enabled = false,
                                         modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                                        label = { Text("Email", fontSize = 16.sp,
+                                            style = TextStyle(
+                                                fontFamily = customRobotoFontFamily,
+                                                fontWeight = FontWeight.Bold)) }
                                     )
 
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -166,7 +164,10 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                         onValueChange = { phonenumber = it },
                                         enabled = true,
                                         modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("Phone Number", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                                        label = { Text("Phone Number", fontSize = 16.sp,
+                                            style = TextStyle(
+                                                fontFamily = customRobotoFontFamily,
+                                                fontWeight = FontWeight.Bold)) }
                                     )
 
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -176,7 +177,10 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                         onValueChange = { address = it },
                                         enabled = true,
                                         modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("Address", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                                        label = { Text("Address", fontSize = 16.sp,
+                                            style = TextStyle(
+                                                fontFamily = customRobotoFontFamily,
+                                                fontWeight = FontWeight.Bold)) }
                                     )
 
                                     Spacer(modifier = Modifier.height(32.dp))
@@ -192,7 +196,7 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                     ) {
                                         Text(
                                             text = "Logout",
-                                            style = TextStyle(fontWeight = FontWeight.Medium)
+                                            style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
                                         )
                                     }
                                 }

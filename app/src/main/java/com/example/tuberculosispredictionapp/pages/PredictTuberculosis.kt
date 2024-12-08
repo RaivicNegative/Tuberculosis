@@ -129,7 +129,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                     Text(
                                         text = "Please click the box if you experience the symptoms below:",
                                         fontSize = 13.sp,
-                                        style = TextStyle(
+                                        style = TextStyle(fontFamily = customRobotoFontFamily,
                                             fontWeight = FontWeight.Bold,
                                             fontStyle = FontStyle.Italic,
                                             color = Color.Black
@@ -161,7 +161,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                     Text(
                                         text = "*Main Symptoms:",
                                         fontSize = 16.sp,
-                                        style = TextStyle(
+                                        style = TextStyle(fontFamily = customRobotoFontFamily,
                                             fontWeight = FontWeight.Bold,
                                             fontStyle = FontStyle.Italic
                                         )
@@ -195,7 +195,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                             Text(
                                                 text = symptom,
                                                 fontSize = 16.sp,
-                                                style = TextStyle(
+                                                style = TextStyle(fontFamily = customRobotoFontFamily,
                                                     fontWeight = FontWeight.Bold,
                                                     color = Color.Black
                                                 )
@@ -208,7 +208,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                     Text(
                                         text = "*Additional Symptoms (Select if applicable):",
                                         fontSize = 16.sp,
-                                        style = TextStyle(
+                                        style = TextStyle(fontFamily = customRobotoFontFamily,
                                             fontWeight = FontWeight.Bold,
                                             fontStyle = FontStyle.Italic,
                                             color = Color.Black
@@ -270,6 +270,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                                 text = symptom,
                                                 fontSize = 16.sp,
                                                 style = TextStyle(
+                                                    fontFamily = customRobotoFontFamily,
                                                     fontWeight = FontWeight.Bold,
                                                     color = Color.Black
                                                 )
@@ -343,7 +344,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                 ) {
                                     Text(
                                         text = "Submit",
-                                        style = TextStyle(fontWeight = FontWeight.Medium)
+                                        style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
                                     )
                                 }
 

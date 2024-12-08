@@ -113,14 +113,14 @@ fun Recommendation(navController: NavController, hasPredicted: Boolean) {
 
                             Text(
                                 text = "Please Consult to a Doctor.",
-                                fontSize = 24.sp,
-                                style = TextStyle(fontStyle = FontStyle.Italic)
+                                fontSize = 20.sp,
+                                style = TextStyle(fontFamily = customRobotoFontFamily, fontStyle = FontStyle.Italic)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(18.dp))
                             Text(
-                                text = "Here are the TB DOTS Centers in our Province:",
+                                text = "Here are the TB DOTS Centers in Bohol:",
                                 fontSize = 18.sp,
-                                style = TextStyle(fontWeight = FontWeight.Medium)
+                                style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
                             )
                         }
                     }
@@ -172,7 +172,7 @@ fun Recommendation(navController: NavController, hasPredicted: Boolean) {
                                 Text(
                                     text = "Please make a prediction first.",
                                     modifier = Modifier.padding(16.dp),
-                                    style = TextStyle(
+                                    style = TextStyle(fontFamily = customRobotoFontFamily,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Gray
@@ -200,7 +200,7 @@ fun Recommendation(navController: NavController, hasPredicted: Boolean) {
                         ) {
                             Text(
                                 text = "Back to Homepage",
-                                style = TextStyle(fontWeight = FontWeight.Medium)
+                                style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Medium)
                             )
                         }
                     }
