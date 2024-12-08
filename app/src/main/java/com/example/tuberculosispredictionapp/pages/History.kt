@@ -31,8 +31,8 @@ fun HistoryScreen(
 
 
     val outputDateFormat = remember {
-        java.text.SimpleDateFormat("EEEE, MM d, yyyy h:mm a", Locale.getDefault()).apply {
-            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        java.text.SimpleDateFormat("EEEE, MMMM d, yyyy h:mm a", Locale.getDefault()).apply {
+            timeZone = java.util.TimeZone.getTimeZone("Asia/Manila")
         }
     }
 

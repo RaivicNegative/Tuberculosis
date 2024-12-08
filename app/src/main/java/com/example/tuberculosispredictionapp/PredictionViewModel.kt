@@ -60,11 +60,10 @@ class PredictionViewModel : ViewModel() {
         val symptomsRef = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
         val predictionsRef = FirebaseDatabase.getInstance().getReference("predictions/$userId")
 
-        // Formatter to parse the ISO 8601 date from the database
-        val inputDateFormat = SimpleDateFormat("EEEE, MM d, yyyy h:mm a", Locale.getDefault()).apply {
-            timeZone = TimeZone.getTimeZone("UTC") // ISO 8601 uses UTC timezone
+        val inputDateFormat = SimpleDateFormat("EEEE, MMM d, yyyy h:mm a", Locale.getDefault()).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
         }
-        // Formatter for human-readable format
+
         val outputDateFormat = SimpleDateFormat("EEEE, MMMM d, yyyy h:mm a", Locale.getDefault()).apply {
             timeZone = TimeZone.getTimeZone("Asia/Manila")
         }
@@ -76,9 +75,11 @@ class PredictionViewModel : ViewModel() {
                 for (childSnapshot in symptomsSnapshot.children) {
                     val symptom = childSnapshot.child("symptom").getValue(String::class.java)
                     val rawTimestamp = childSnapshot.child("timestamp").getValue(String::class.java)
+                    Log.d("TimestampDebug", "Raw Timestamp: $rawTimestamp")
 
                     try {
                         val parsedDate = rawTimestamp?.let { inputDateFormat.parse(it) }
+                        Log.d("ParsedDateDebug", "Parsed Date: $parsedDate")
                         val readableTimestamp = parsedDate?.let { outputDateFormat.format(it) }
 
                         if (symptom != null && readableTimestamp != null) {
@@ -102,6 +103,8 @@ class PredictionViewModel : ViewModel() {
 
                             try {
                                 val parsedDate = rawTimestamp?.let { inputDateFormat.parse(it) }
+                                Log.d("ParsedDateDebug", "Parsed Date: $parsedDate")
+
                                 val readableTimestamp = parsedDate?.let { outputDateFormat.format(it) }
 
                                 if (readableTimestamp != null) {
@@ -175,7 +178,7 @@ class PredictionViewModel : ViewModel() {
         }
 
         val currentTimestamp = System.currentTimeMillis()
-        val dateFormat = SimpleDateFormat("EEEE, MM d, yyyy h:mm a", Locale.getDefault()).apply {
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d, yyyy h:mm a", Locale.getDefault()).apply {
             timeZone = TimeZone.getTimeZone("Asia/Manila")
         }
         val formattedTimestamp = dateFormat.format(currentTimestamp)
@@ -202,7 +205,7 @@ class PredictionViewModel : ViewModel() {
         val symptomsRef = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
 
         val currentTimestamp = System.currentTimeMillis()
-        val dateFormat = SimpleDateFormat("EEEE, MM d, yyyy h:mm a", Locale.getDefault()).apply {
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d, yyyy h:mm a", Locale.getDefault()).apply {
             timeZone = TimeZone.getTimeZone("Asia/Manila")
         }
 
