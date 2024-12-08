@@ -45,7 +45,7 @@ fun PrivacyPolicyPage(modifier: Modifier) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Privacy Policy", fontSize = 36.sp,
+                title = { Text("Privacy Policy", fontSize = 30.sp,
                     style = TextStyle(fontFamily = customRobotoFontFamily,
                         fontWeight = FontWeight.Bold)) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF81C784)),
@@ -56,7 +56,7 @@ fun PrivacyPolicyPage(modifier: Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFE6F2F1))
+                    .background(Color(0xFFEDF7FB))
                     .padding(paddingValues)
             ) {
 
@@ -76,8 +76,8 @@ fun PrivacyPolicyPage(modifier: Modifier) {
                             .padding(bottom = 80.dp)
                     ) {
                         Text(
-                            text = "Privacy Policy for Tuberculosis Prediction Application",
-                            fontSize = 22.sp,
+                            text = "Tuberculosis Prediction Application",
+                            fontSize = 18.sp,
                             style = TextStyle(
                                 fontFamily = customRobotoFontFamily,
                                 fontWeight = FontWeight.Bold,
@@ -101,7 +101,7 @@ fun PrivacyPolicyPage(modifier: Modifier) {
 
                         Text(
                             text = "Hey there! Welcome to Tuberculosis Prediction Application. We’re dedicated to keeping your personal information safe and secure. This Privacy Policy explains how we collect, use, and protect your data when you use our app designed to help predict the likelihood of tuberculosis.",
-                            fontSize = 18.sp,
+                            fontSize = 17.sp,
                             style = TextStyle(
                                 fontFamily = customRobotoFontFamily,
                                 fontWeight = FontWeight.Normal,
@@ -110,7 +110,7 @@ fun PrivacyPolicyPage(modifier: Modifier) {
                             )
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         for (i in 1..7) {
                             TextButton(onClick = { toggleVisibility(i) }) {
@@ -142,7 +142,7 @@ fun PrivacyPolicyPage(modifier: Modifier) {
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }

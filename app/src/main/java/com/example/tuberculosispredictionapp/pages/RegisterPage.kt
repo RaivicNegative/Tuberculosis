@@ -32,7 +32,7 @@ fun RegisterPage(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) } // For showing loading indicator
+    var isLoading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -112,7 +112,9 @@ fun RegisterPage(
 
                             if (success) {
                                 Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
-                                navController.navigate("Login")
+                                navController.navigate("Login"){
+                                    popUpTo("register") { inclusive = true }
+                                }
                             } else {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             }

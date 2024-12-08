@@ -54,9 +54,8 @@ class ProfileViewModel : ViewModel() {
                     val email = snapshot.child("email").getValue(String::class.java) ?: ""
                     val phonenumber = snapshot.child("phonenumber").getValue(String::class.java) ?: ""
                     val address = snapshot.child("address").getValue(String::class.java) ?: ""
-                    val password = snapshot.child("password").getValue(String::class.java) ?: ""
 
-                    _userProfile.value = UserProfile(fullname, address, phonenumber, email, password)
+                    _userProfile.value = UserProfile(fullname, address, phonenumber, email)
                 } else {
                     _errorMessage.value = "User profile not found."
                     Log.e("ProfileViewModel", "User profile not found.")

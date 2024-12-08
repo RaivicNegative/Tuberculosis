@@ -1,6 +1,7 @@
 package com.example.tuberculosispredictionapp.pages
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,8 +36,13 @@ import kotlin.math.roundToInt
 
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import com.google.firebase.auth.FirebaseAuth
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewModel = viewModel()) {
     var selectedSymptoms by remember { mutableStateOf(emptyList<String>()) }
@@ -50,133 +56,82 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
         viewModel.listenForPredictionUpdates(userId.toString())
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE1F5FE))
-    ) {
-        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        "Predict Tuberculosis",
+                        fontSize = 30.sp,
+                        style = TextStyle(
+                            fontFamily = customRobotoFontFamily,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.arrow_back),
+                            contentDescription = "Back",
+                            colorFilter = ColorFilter.tint(Color.Black)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFF81C784)
+                ),
+            )
+        },
+        content = { paddingValues ->
 
-            IconButton(onClick = { navController.popBackStack() }) {
-                Image(
-                    painter = painterResource(id = R.drawable.arrow_back),
-                    contentDescription = "Back",
-                    colorFilter = ColorFilter.tint(Color.Black)
-                )
-            }
-
-            Card(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .height(1000.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFC3EFC5)),
-                elevation = CardDefaults.cardElevation(8.dp)
+                    .background(Color(0xFFE1F5FE))
+                    .padding(paddingValues)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(modifier = Modifier.fillMaxSize().padding(8.dp))
+                {
+
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFF81C784))
+                            .fillMaxSize()
+                            .height(1000.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFC3EFC5)),
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "Predict Tuberculosis",
-                                fontSize = 24.sp,
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                            )
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF81C784))
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
 
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.img),
-                                contentDescription = "Prediction Icon",
-                                modifier = Modifier.size(80.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            Text(
-                                text = "Please click the box if you experience the symptoms below:",
-                                fontSize = 13.sp,
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontStyle = FontStyle.Italic,
-                                    color = Color.Black
-                                )
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(450.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                    ) {
-
-                        val scrollState = rememberScrollState()
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .verticalScroll(scrollState),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.Start
-                        ) {
-
-                            Text(
-                                text = "*Main Symptoms:",
-                                fontSize = 16.sp,
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontStyle = FontStyle.Italic
-                                )
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            val symptoms = listOf(
-                                "Cough(>3weeks)",
-                                "Blood In Sputum",
-                                "Chest Pain",
-                                "Night Sweats",
-                                "Weight Loss",
-                                "Fever",
-                                "Fatigue",
-                                "Loss of Appetite"
-                            )
-
-                            symptoms.forEach { symptom ->
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Checkbox(
-                                        checked = selectedSymptoms.contains(symptom),
-                                        onCheckedChange = { isChecked ->
-                                            selectedSymptoms = if (isChecked) {
-                                                selectedSymptoms + symptom
-                                            } else {
-                                                selectedSymptoms - symptom
-                                            }
-                                        }
+                                    Image(
+                                        painter = painterResource(id = R.drawable.prediction),
+                                        contentDescription = "Prediction Icon",
+                                        modifier = Modifier.size(80.dp)
                                     )
+
+                                    Spacer(modifier = Modifier.height(10.dp))
+
                                     Text(
-                                        text = symptom,
-                                        fontSize = 16.sp,
+                                        text = "Please click the box if you experience the symptoms below:",
+                                        fontSize = 13.sp,
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
+                                            fontStyle = FontStyle.Italic,
                                             color = Color.Black
                                         )
                                     )
@@ -185,115 +140,220 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
 
                             Spacer(modifier = Modifier.height(10.dp))
 
-                            Text(
-                                text = "*Additional Symptoms (Select if applicable):",
-                                fontSize = 16.sp,
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontStyle = FontStyle.Italic,
-                                    color = Color.Black
-                                )
-                            )
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(450.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+                            ) {
 
-                            Spacer(modifier = Modifier.height(8.dp))
+                                val scrollState = rememberScrollState()
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .verticalScroll(scrollState)
+                                        .padding(start = 16.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.Start
+                                ) {
 
-                            val secondSetSymptoms = listOf(
-                                "Severe headache", "Back pain", "Joint pain", "Shortness of breath", "Nausea", "Vomiting",
-                                "Abdominal pain", "Sore throat", "Dizziness", "Muscle aches", "Sweating", "Skin rash",
-                                "Swollen lymph nodes", "Difficulty swallowing", "Shivering", "Palpitations", "Cold or chills",
-                                "Headache", "Nasal congestion", "Diarrhea", "Constipation", "Indigestion", "Heartburn",
-                                "Skin irritation or itching", "Joint swelling", "Mouth sores", "Trouble sleeping",
-                                "Difficulty breathing", "Memory loss or confusion", "Blurry vision", "Loss of taste or smell",
-                                "Cramps", "Excessive thirst or urination", "Unexplained bruising or bleeding"
-                            )
-
-                            secondSetSymptoms.forEach { symptom ->
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Checkbox(
-                                        checked = selectedSymptoms.contains(symptom),
-                                        onCheckedChange = { isChecked ->
-                                            selectedSymptoms = if (isChecked) {
-                                                selectedSymptoms + symptom
-                                            } else {
-                                                selectedSymptoms - symptom
-                                            }
-                                        }
-                                    )
                                     Text(
-                                        text = symptom,
+                                        text = "*Main Symptoms:",
                                         fontSize = 16.sp,
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
+                                            fontStyle = FontStyle.Italic
+                                        )
+                                    )
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    val symptoms = listOf(
+                                        "Cough(>3weeks)",
+                                        "Blood In Sputum",
+                                        "Chest Pain",
+                                        "Night Sweats",
+                                        "Weight Loss",
+                                        "Fever",
+                                        "Fatigue",
+                                        "Loss of Appetite"
+                                    )
+
+                                    symptoms.forEach { symptom ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Checkbox(
+                                                checked = selectedSymptoms.contains(symptom),
+                                                onCheckedChange = { isChecked ->
+                                                    selectedSymptoms = if (isChecked) {
+                                                        selectedSymptoms + symptom
+                                                    } else {
+                                                        selectedSymptoms - symptom
+                                                    }
+                                                }
+                                            )
+                                            Text(
+                                                text = symptom,
+                                                fontSize = 16.sp,
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = Color.Black
+                                                )
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(10.dp))
+
+                                    Text(
+                                        text = "*Additional Symptoms (Select if applicable):",
+                                        fontSize = 16.sp,
+                                        style = TextStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            fontStyle = FontStyle.Italic,
                                             color = Color.Black
                                         )
                                     )
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    val secondSetSymptoms = listOf(
+                                        "Severe headache",
+                                        "Back pain",
+                                        "Joint pain",
+                                        "Shortness of breath",
+                                        "Nausea",
+                                        "Vomiting",
+                                        "Abdominal pain",
+                                        "Sore throat",
+                                        "Dizziness",
+                                        "Muscle aches",
+                                        "Sweating",
+                                        "Skin rash",
+                                        "Swollen lymph nodes",
+                                        "Difficulty swallowing",
+                                        "Shivering",
+                                        "Palpitations",
+                                        "Cold or chills",
+                                        "Headache",
+                                        "Nasal congestion",
+                                        "Diarrhea",
+                                        "Constipation",
+                                        "Indigestion",
+                                        "Heartburn",
+                                        "Skin irritation or itching",
+                                        "Joint swelling",
+                                        "Mouth sores",
+                                        "Trouble sleeping",
+                                        "Difficulty breathing",
+                                        "Memory loss or confusion",
+                                        "Blurry vision",
+                                        "Loss of taste or smell",
+                                        "Cramps",
+                                        "Excessive thirst or urination",
+                                        "Unexplained bruising or bleeding"
+                                    )
+
+                                    secondSetSymptoms.forEach { symptom ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Checkbox(
+                                                checked = selectedSymptoms.contains(symptom),
+                                                onCheckedChange = { isChecked ->
+                                                    selectedSymptoms = if (isChecked) {
+                                                        selectedSymptoms + symptom
+                                                    } else {
+                                                        selectedSymptoms - symptom
+                                                    }
+                                                }
+                                            )
+                                            Text(
+                                                text = symptom,
+                                                fontSize = 16.sp,
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = Color.Black
+                                                )
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Button(
-                            onClick = {
-                                Log.d("Prediction", "Selected Symptoms: $selectedSymptoms")
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Button(
+                                    onClick = {
+                                        Log.d("Prediction", "Selected Symptoms: $selectedSymptoms")
 
-                                if (selectedSymptoms.isEmpty()) {
-                                    Log.d("Prediction", "No symptoms selected.")
-                                    viewModel.setPredictionResult(PredictionResult("No Symptoms", 0f, "No Risk"))
-                                    viewModel.setHasPredicted(true)
-                                } else {
+                                        if (selectedSymptoms.isEmpty()) {
+                                            Log.d("Prediction", "No symptoms selected.")
 
-                                    viewModel.saveSymptomsToDatabase(userId.toString(), selectedSymptoms)
+                                            Toast.makeText(context, "Please select at least one symptom", Toast.LENGTH_SHORT).show()
 
+                                            viewModel.setHasPredicted(true)
+                                        } else {
 
-                                    val predictionResult = viewModel.getPredictionResult(selectedSymptoms)
-
-
-                                    viewModel.setPredictionResult(predictionResult)
-                                    viewModel.setHasPredicted(true)
+                                            viewModel.saveSymptomsToDatabase(
+                                                userId.toString(),
+                                                selectedSymptoms
+                                            )
 
 
-                                    viewModel.savePrediction(userId.toString(), selectedSymptoms.map { it.hashCode() }, predictionResult)
+                                            val predictionResult =
+                                                viewModel.getPredictionResult(selectedSymptoms)
 
 
-                                    val roundedConfidence = (predictionResult.confidence * 100).roundToInt()
-                                    Log.d(
-                                        "Prediction",
-                                        "Disease: ${predictionResult.disease}, Confidence: $roundedConfidence%, Risk: ${predictionResult.riskCategory}"
-                                    )
+                                            viewModel.setPredictionResult(predictionResult)
+                                            viewModel.setHasPredicted(true)
 
 
-                                    navController.navigate(
-                                        "result/${predictionResult.disease}/${
-                                            (predictionResult.confidence * 100).roundToInt()
-                                        }/${predictionResult.riskCategory}"
+                                            viewModel.savePrediction(
+                                                userId.toString(),
+                                                selectedSymptoms.map { it.hashCode() },
+                                                predictionResult
+                                            )
+
+
+                                            val roundedConfidence =
+                                                (predictionResult.confidence * 100).roundToInt()
+                                            Log.d(
+                                                "Prediction",
+                                                "Disease: ${predictionResult.disease}, Confidence: $roundedConfidence%, Risk: ${predictionResult.riskCategory}"
+                                            )
+
+
+                                            navController.navigate(
+                                                "result/${predictionResult.disease}/${
+                                                    (predictionResult.confidence * 100).roundToInt()
+                                                }/${predictionResult.riskCategory}"
+                                            )
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF0288D1),
+                                        contentColor = Color.White
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        text = "Submit",
+                                        style = TextStyle(fontWeight = FontWeight.Medium)
                                     )
                                 }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF0288D1),
-                                contentColor = Color.White
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "Submit",
-                                style = TextStyle(fontWeight = FontWeight.Medium)
-                            )
-                        }
 
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }
 
 

@@ -34,13 +34,11 @@ import com.google.firebase.auth.FirebaseAuth
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewModel, authViewModel: AuthViewModel) {
-    var passwordVisible by remember { mutableStateOf(false) }
 
     var fullname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf(FirebaseAuth.getInstance().currentUser?.email ?: "") }
     var phonenumber by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
 
     val isLoading by profileViewModel.isLoading.observeAsState(false)
     val userProfile by profileViewModel.userProfile.observeAsState(UserProfile())
@@ -61,7 +59,7 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                 title = {
                     Text(
                         "Profile",
-                        fontSize = 36.sp,
+                        fontSize = 30.sp,
                         style = TextStyle(fontFamily = customRobotoFontFamily, fontWeight = FontWeight.Bold)
                     )
                 },
@@ -79,7 +77,7 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFE6F2F1))
+                    .background(Color(0xFFEDF7FB))
                     .padding(paddingValues)
             ) {
                 if (isLoading) {
@@ -101,7 +99,7 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                 .fillMaxWidth()
                                 .padding(16.dp)
                                 .height(550.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF99C1D3)),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFB6DFF1)),
                             shape = RoundedCornerShape(16.dp),
                             elevation = CardDefaults.cardElevation(8.dp)
                         ) {
@@ -179,23 +177,6 @@ fun ProfilePage(modifier: Modifier = Modifier, profileViewModel: ProfileViewMode
                                         enabled = true,
                                         modifier = Modifier.fillMaxWidth(),
                                         label = { Text("Address", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
-                                    )
-
-                                    Spacer(modifier = Modifier.height(16.dp))
-
-                                    OutlinedTextField(
-                                        value = password,
-                                        onValueChange = { password = it },
-                                        enabled = true,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        label = { Text("Password", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
-                                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                                        trailingIcon = {
-                                            val icon = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                                Icon(imageVector = icon, contentDescription = null)
-                                            }
-                                        }
                                     )
 
                                     Spacer(modifier = Modifier.height(32.dp))

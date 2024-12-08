@@ -70,10 +70,10 @@ class AuthViewModel : ViewModel() {
                             "email" to email
                         )
 
-                        // Save profile data to Firebase Realtime Database
                         val usersRef = FirebaseDatabase.getInstance().getReference("profile")
                         usersRef.child(userId).setValue(profile)
                             .addOnSuccessListener {
+                                _authstate.value = Authstate.Authenticated
                                 callback(true, "Registration Successful")
                             }
                             .addOnFailureListener { e ->

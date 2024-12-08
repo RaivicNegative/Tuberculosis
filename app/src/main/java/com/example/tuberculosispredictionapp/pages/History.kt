@@ -1,5 +1,6 @@
 package com.example.tuberculosispredictionapp.pages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,7 @@ fun HistoryScreen(
 
     val outputDateFormat = remember {
         java.text.SimpleDateFormat("EEEE, MMMM d, yyyy h:mm a", Locale.getDefault()).apply {
-            timeZone = java.util.TimeZone.getTimeZone("Asia/Manila")
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
         }
     }
 
@@ -40,7 +41,7 @@ fun HistoryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Prediction History", fontSize = 36.sp,
+                title = { Text("Prediction History", fontSize = 30.sp,
                     style = TextStyle(fontFamily = customRobotoFontFamily,
                         fontWeight = FontWeight.Bold)) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF81C784)),
@@ -48,6 +49,13 @@ fun HistoryScreen(
             )
         },
         content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFEDF7FB))
+                    .padding(paddingValues)
+            ) {
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
