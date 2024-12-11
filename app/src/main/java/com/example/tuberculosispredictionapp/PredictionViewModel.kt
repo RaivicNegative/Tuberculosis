@@ -1,5 +1,6 @@
 package com.example.tuberculosispredictionapp
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.tensorflow.lite.Interpreter
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,7 +25,6 @@ data class CombinedEntry(
     val confidence: Float,
     val riskCategory: String
 )
-
 
 data class PredictionResult(
     val disease: String = "Tuberculosis",
@@ -48,6 +51,17 @@ class PredictionViewModel : ViewModel() {
 
     init {
         fetchCombinedData()
+    }
+
+    private fun loadModelFile(context: Context, modelFileName: String): Interpreter {
+        val assetFileDescriptor = context.assets.openFd(modelFileName)
+        val fileInputStream = assetFileDescriptor.createInputStream()
+        val fileChannel = fileInputStream.channel
+        val startOffset = assetFileDescriptor.startOffset
+        val declaredLength = assetFileDescriptor.declaredLength
+
+        val modelByteBuffer = fileChannel.map(java.nio.channels.FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+        return Interpreter(modelByteBuffer)
     }
 
     fun fetchCombinedData() {
@@ -139,27 +153,59 @@ class PredictionViewModel : ViewModel() {
         })
     }
 
+    fun getPredictionResult(context: Context, selectedSymptoms: List<String>): PredictionResult {
+        val totalFeatures = 44
+        val symptomIndices = mapOf(
+            "Cough(>3weeks)" to 0,
+            "Bloodinsputum" to 1,
+            "Chestpain" to 2,
+            "Nightsweats" to 3,
+            "Weightloss" to 4,
+            "Fever" to 5,
+            "Fatigue" to 6,
+            "Lossofappetite" to 7,
+            "Others" to 8
+        )
 
-
-
-    fun getPredictionResult(selectedSymptoms: List<String>): PredictionResult {
-        val confidence = (0..100).random().toFloat() / 100
-        val disease = if (selectedSymptoms.contains("Cough(>3weeks)") || selectedSymptoms.contains("Blood In Sputum")) {
-            "Tuberculosis"
-        } else {
-            "No Tuberculosis"
+        if (selectedSymptoms.isEmpty()) {
+            Log.d("Prediction", "No symptoms selected.")
+            return PredictionResult("No Symptoms", 0f, "No Risk")
         }
 
-        val riskCategory = when {
-            confidence == 1.0f -> "Confirmed Diagnosis"
-            confidence > 0.80 -> "Very High Risk"
-            confidence > 0.50 -> "High Risk"
-            confidence > 0.20 -> "Medium Risk"
-            confidence > 0.01 -> "Low Risk"
-            else -> "No Risk"
+        val inputData = FloatArray(totalFeatures) { index ->
+            val symptom = symptomIndices.entries.find { it.value == index }?.key
+            if (symptom != null && selectedSymptoms.contains(symptom)) 1f else 0f
         }
 
-        return PredictionResult(disease, confidence, riskCategory)
+        Log.d("Prediction", "Input Data: ${inputData.joinToString()}")
+
+        val model = loadModelFile(context, "tuberculosis_trained_model.tflite")
+        val inputTensor = ByteBuffer.allocateDirect(4 * inputData.size).apply {
+            order(ByteOrder.nativeOrder())
+            inputData.forEach { putFloat(it) }
+        }
+        val outputBuffer = ByteBuffer.allocateDirect(4).apply { order(ByteOrder.nativeOrder()) }
+
+        return try {
+            model.run(inputTensor, outputBuffer)
+            outputBuffer.rewind()
+            val confidence = outputBuffer.float
+
+            val riskCategory = when {
+                confidence >= 0.84 -> "Extremely High Risk"
+                confidence >= 0.40 -> "Very High Risk"
+                confidence >= 0.21 -> "Moderate Risk"
+                confidence > 0.01 -> "Low Risk"
+                else -> "No Risk"
+            }
+
+            PredictionResult("Tuberculosis", confidence, riskCategory)
+        } catch (e: Exception) {
+            Log.e("Prediction Error", "Error during prediction: ${e.message}")
+            PredictionResult("Error", 0f, "Unknown")
+        } finally {
+            model.close()
+        }
     }
 
     fun setPredictionResult(result: PredictionResult) {
@@ -200,7 +246,6 @@ class PredictionViewModel : ViewModel() {
             }
     }
 
-
     fun saveSymptomsToDatabase(userId: String, selectedSymptoms: List<String>) {
         val symptomsRef = FirebaseDatabase.getInstance().getReference("users/$userId/symptoms")
 
@@ -225,7 +270,6 @@ class PredictionViewModel : ViewModel() {
             }
         }
     }
-
 
     fun listenForPredictionUpdates(toString: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid

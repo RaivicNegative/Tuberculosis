@@ -1,5 +1,6 @@
 package com.example.tuberculosispredictionapp.pages
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -306,8 +307,8 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                             )
 
 
-                                            val predictionResult =
-                                                viewModel.getPredictionResult(selectedSymptoms)
+                                            val predictionResult = viewModel.getPredictionResult(context, selectedSymptoms)
+
 
 
                                             viewModel.setPredictionResult(predictionResult)
