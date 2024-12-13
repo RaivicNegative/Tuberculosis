@@ -322,8 +322,7 @@ fun PredictTuberculosis(navController: NavController, viewModel: PredictionViewM
                                             )
 
 
-                                            val roundedConfidence =
-                                                (predictionResult.confidence * 100).roundToInt()
+                                            val roundedConfidence = (predictionResult.confidence * 100).roundToInt()
                                             Log.d(
                                                 "Prediction",
                                                 "Disease: ${predictionResult.disease}, Confidence: $roundedConfidence%, Risk: ${predictionResult.riskCategory}"

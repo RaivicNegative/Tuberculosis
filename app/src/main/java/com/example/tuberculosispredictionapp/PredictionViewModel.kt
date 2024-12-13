@@ -192,8 +192,8 @@ class PredictionViewModel : ViewModel() {
             val confidence = outputBuffer.float
 
             val riskCategory = when {
-                confidence >= 0.84 -> "Extremely High Risk"
-                confidence >= 0.40 -> "Very High Risk"
+                confidence >= 0.84 -> "Very High Risk"
+                confidence >= 0.40 -> "High Risk"
                 confidence >= 0.21 -> "Moderate Risk"
                 confidence > 0.01 -> "Low Risk"
                 else -> "No Risk"
